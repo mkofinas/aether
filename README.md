@@ -9,3 +9,5 @@ Paper: Coming soon!
 </pre>
 
 Stay tuned!
+
+![aether](assets/aether_teaser.png)
