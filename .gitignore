@@ -1,0 +1,7 @@
+*.egg-info
+__pycache__
+
+data/
+results/
+visualizations/
+experiments/lorentz/saved/
