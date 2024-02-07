@@ -15,6 +15,7 @@ Official source code for
 ![aether](assets/aether_teaser.png)
 
 [![arXiv](https://img.shields.io/badge/arXiv-2310.20679-b31b1b.svg?logo=arxiv)](https://arxiv.org/abs/2310.20679)
+[![Electrostatic Field Dataset](https://img.shields.io/badge/Zenodo-Electrostatic%20Field%20Dataset-blue?logo=zenodo)](https://doi.org/10.5281/zenodo.10631646)
 
 __TL;DR__: We discover global fields in interacting systems, inferring them from the dynamics alone, using neural fields.
 

@@ -1,14 +1,5 @@
 
-These scripts are adapted from https://github.com/ethanfetaya/NRI which is under the MIT license.
-
-When using these scripts, please cite
-
-@article{kipf2018neural,
-  title={Neural Relational Inference for Interacting Systems},
-  author={Kipf, Thomas and Fetaya, Ethan and Wang, Kuan-Chieh and Welling, Max and Zemel, Richard},
-  journal={arXiv preprint arXiv:1802.04687},
-  year={2018}
-}
+These scripts are adapted from [NRI](https://github.com/ethanfetaya/NRI).
 
 Run the following to generate the dataset with the (static) electrostatic field and
 convert it to Pytorch format:
