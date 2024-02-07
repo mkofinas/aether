@@ -45,15 +45,29 @@ It provides full instructions and details for downloading/generating the data an
 - Traffic scenes (inD): [`experiments/ind`](experiments/ind)
 - Gravitational field: [`experiments/gravitational`](experiments/gravitational)
 
+### Scripts
+
+The `scripts` directory contains scripts for running experiments for the electrostatic
+field setting, the traffic scenes, and the gravitational field. From the root directory,
+you can run the following:
+
+- `./scripts/electrostatic_field_aether.sh`
+- `./scripts/ind_aether.sh`
+- `./scripts/gravitational_field_3d_aether.sh`
+
+Each script will train a model, evaluate it, save results, and (in the case of Aether)
+visualize the discovered field(s).
+You can also find scripts for other baseline models in the `scripts` directory.
+
 
 #### Attribution
 
 Our codebase is based on the code from the papers:
-- [__Roto-translated Local Coordinate Frames For Interacting Dynamical Systems__](https://arxiv.org/abs/2110.14961), https://github.com/mkofinas/locs
-- [__Dynamic Neural Relational Inference__](https://openaccess.thecvf.com/content_CVPR_2020/papers/Graber_Dynamic_Neural_Relational_Inference_CVPR_2020_paper.pdf), https://github.com/cgraber/cvpr_dNRI
-- [__Neural Relational Inference for Interacting Systems__](https://arxiv.org/pdf/1802.04687.pdf), https://github.com/ethanfetaya/NRI
-- [__SE(3) Equivariant Graph Neural Networks with Complete Local Frames__](https://arxiv.org/abs/2110.14811), https://github.com/mouthful/ClofNet
-- [__E(n) Equivariant Graph Neural Networks__](https://arxiv.org/abs/2102.09844), https://github.com/vgsatorras/egnn
+- [__LoCS__](https://arxiv.org/abs/2110.14961), https://github.com/mkofinas/locs
+- [__dNRI__](https://openaccess.thecvf.com/content_CVPR_2020/papers/Graber_Dynamic_Neural_Relational_Inference_CVPR_2020_paper.pdf), https://github.com/cgraber/cvpr_dNRI
+- [__NRI__](https://arxiv.org/pdf/1802.04687.pdf), https://github.com/ethanfetaya/NRI
+- [__ClofNet__](https://arxiv.org/abs/2110.14811), https://github.com/mouthful/ClofNet
+- [__EGNN__](https://arxiv.org/abs/2102.09844), https://github.com/vgsatorras/egnn
 
 ## Citation
 
