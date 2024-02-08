@@ -20,6 +20,8 @@ Official source code for
 
 __TL;DR__: We discover global fields in interacting systems, inferring them from the dynamics alone, using neural fields.
 
+For a reference implementation of Aether, see [here](nn/state2state/aether.py).
+
 ## Setup
 Create a new conda environment and install dependencies:
 ```
