@@ -100,7 +100,7 @@ if __name__ == '__main__':
         # NOTE: Hardcoded for now
         scale = 0.00814636091724502
         multiplier = 12
-        speed_norm = torch.load(os.path.join(val_data._data_path, 'train_vel_norm_stats'))[1]
+        speed_norm = torch.load(os.path.join(val_data._data_path, 'train_speed_norm_stats'))
         map_img = val_data.load_road_image()
         image_extent = np.array(map_img.size) * scale * multiplier
         image_extent = image_extent.astype(np.float32)

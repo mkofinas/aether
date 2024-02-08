@@ -105,8 +105,8 @@ class SingleIndData(Dataset):
 
     def normalize_data(self, data_path):
         if self.vel_norm_norm:
-            path = os.path.join(data_path, 'train_vel_norm_stats')
-            dist_mean, vel_norm_max = torch.load(path)
+            path = os.path.join(data_path, 'train_speed_norm_stats')
+            vel_norm_max = torch.load(path)
             if isinstance(self.feats, torch.Tensor):
                 self.feats = self.feats / vel_norm_max
             else:
@@ -121,8 +121,8 @@ class SingleIndData(Dataset):
 
     def unnormalize_data(self, feats):
         if self.vel_norm_norm:
-            path = os.path.join(self._data_path, 'train_vel_norm_stats')
-            dist_mean, vel_norm_max = torch.load(path)
+            path = os.path.join(self._data_path, 'train_speed_norm_stats')
+            vel_norm_max = torch.load(path)
             if isinstance(feats, torch.Tensor):
                 unnorm_feats = feats * vel_norm_max
             else:
@@ -247,64 +247,10 @@ def ind_collate_fn(batch):
         final_inputs[ind, :inp.size(0), :inp.size(1)] = inp
         final_masks[ind, :mask.size(0), :mask.size(1)] = mask
         final_burn_in_masks[ind, :mask.size(0), :mask.size(1)] = burn_in_mask
-    return {'inputs': final_inputs, 'masks': final_masks, 'burn_in_masks': final_burn_in_masks,
-            'node_inds':node_inds, 'graph_info':graph_info}
-
-
-if __name__ == '__main__':
-    import experiments.ind.ind_data_utils as idu
-
-    parser = argparse.ArgumentParser('Build ind datasets')
-    parser.add_argument('--data_dir', required=True)
-    parser.add_argument('--output_dir', required=True)
-    parser.add_argument('--num_train', type=int, default=19)
-    parser.add_argument('--num_val', type=int, default=7)
-    parser.add_argument('--downsample_factor', type=int, default=10)
-    args = parser.parse_args()
-
-    all_tracks, all_static, all_meta = idu.read_all_recordings_from_csv(args.data_dir)
-    all_feats = []
-    all_masks = []
-    min_feats = np.array([100000000000000, 100000000000000, 100000000000000, 10000000000000])
-    max_feats = np.array([-100000000000000, -100000000000000, -100000000000000, -10000000000000])
-    for track_set_id,track_set in enumerate(all_tracks):
-        num_tracks = len(track_set)
-        max_frame = 0
-        for track_info in all_static[track_set_id]:
-            max_frame = max(max_frame, track_info['finalFrame'])
-        print("%d: %d", track_set_id, max_frame)
-        feats = np.zeros((max_frame+1, num_tracks, 4))
-        masks = np.zeros((max_frame+1, num_tracks))
-        for track_id, track in enumerate(track_set):
-            frames = track['frame']
-            feats[frames, track_id, 0] = track['xCenter']
-            feats[frames, track_id, 1] = track['yCenter']
-            feats[frames, track_id, 2] = track['xVelocity']
-            feats[frames, track_id, 3] = track['yVelocity']
-            masks[frames, track_id] = 1
-            if track_set_id < args.num_train:
-                min_feats[0] = min(min_feats[0], track['xCenter'].min())
-                min_feats[1] = min(min_feats[1], track['yCenter'].min())
-                min_feats[2] = min(min_feats[2], track['xVelocity'].min())
-                min_feats[3] = min(min_feats[3], track['yVelocity'].min())
-                max_feats[0] = max(max_feats[0], track['xCenter'].max())
-                max_feats[1] = max(max_feats[1], track['yCenter'].max())
-                max_feats[2] = max(max_feats[2], track['xVelocity'].max())
-                max_feats[3] = max(max_feats[3], track['yVelocity'].max())
-        all_feats.append(torch.FloatTensor(feats[::args.downsample_factor]))
-        all_masks.append(torch.FloatTensor(masks[::args.downsample_factor]))
-    train_feats = all_feats[:args.num_train]
-    val_feats = all_feats[args.num_train:args.num_train+args.num_val]
-    test_feats = all_feats[args.num_train+args.num_val:]
-    train_masks = all_masks[:args.num_train]
-    val_masks = all_masks[args.num_train:args.num_train+args.num_val]
-    test_masks = all_masks[args.num_train+args.num_val:]
-    train_path = os.path.join(args.output_dir, 'processed_train_data')
-    torch.save([train_feats, train_masks], train_path)
-    val_path = os.path.join(args.output_dir, 'processed_val_data')
-    torch.save([val_feats, val_masks], val_path)
-    test_path = os.path.join(args.output_dir, 'processed_test_data')
-    torch.save([test_feats, test_masks], test_path)
-
-    stats_path = os.path.join(args.output_dir, 'train_data_stats')
-    torch.save([torch.FloatTensor(min_feats), torch.FloatTensor(max_feats)], stats_path)
+    return {
+        'inputs': final_inputs,
+        'masks': final_masks,
+        'burn_in_masks': final_burn_in_masks,
+        'node_inds': node_inds,
+        'graph_info': graph_info
+    }
