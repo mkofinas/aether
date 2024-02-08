@@ -1,14 +1,24 @@
 import argparse
 import os
+import pickle
 
+import numpy as np
 import torch
+
+import experiments.ind.dataset.ind_data_utils as idu
+
+CLASS_TO_IDX = {'bicycle': 0, 'car': 1, 'pedestrian': 2, 'truck_bus': 1}
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Build ind datasets')
+    parser.add_argument('--original_data_dir', required=True)
     parser.add_argument('--data_dir', required=True)
     parser.add_argument('--output_dir', required=True)
     parser.add_argument('--scenes_to_use', type=int, nargs='+', default=[2])
     args = parser.parse_args()
+
+    _, all_static, _ = idu.read_all_recordings_from_csv(args.original_data_dir)
 
     train_path = os.path.join(args.data_dir, 'processed_train_data')
     train_feats, train_masks = torch.load(train_path)
@@ -77,11 +87,33 @@ if __name__ == '__main__':
 
     new_test_feats = []
     new_test_masks = []
+    new_test_num_scenes = []
     for indices in test_indices:
         new_test_feats.append(sum([
             list(feat.split(num_full_steps))[:-1] for feat in all_feats[indices]], []))
         new_test_masks.append(sum([
             list(mask.split(num_full_steps))[:-1] for mask in all_masks[indices]], []))
+        new_test_num_scenes.append(
+            [
+                len(si) for si in [list(feat.split(num_full_steps))[:-1] for feat in all_feats[indices]]
+            ]
+        )
+
+    test_classes = []
+    test_object_sizes = []
+    for num_scenes, indices in zip(new_test_num_scenes, test_indices):
+        test_classes.append(
+            sum(
+                [[[CLASS_TO_IDX[s['class']] for s in static]] * num
+                 for static, num in zip(all_static[indices], num_scenes)], []
+            )
+        )
+        test_object_sizes.append(
+            sum(
+                [[np.array([[s['width'], s['length']] for s in static])] * num
+                 for static, num in zip(all_static[indices], num_scenes)], []
+            )
+        )
 
     for idx in range(len(new_feats)):
         out_path = os.path.join(args.output_dir, f'single_ind_processed_{args.scenes_to_use[idx]}')
@@ -94,3 +126,10 @@ if __name__ == '__main__':
         torch.save((new_val_feats[idx], new_val_masks[idx]), val_path)
         test_path = os.path.join(out_path, 'processed_test_data')
         torch.save((new_test_feats[idx], new_test_masks[idx]), test_path)
+        test_classes_path = os.path.join(out_path, 'test_classes.pkl')
+        with open(test_classes_path, 'wb') as f:
+            pickle.dump(test_classes[idx], f)
+
+        test_object_sizes_path = os.path.join(out_path, 'test_object_sizes.pkl')
+        with open(test_object_sizes_path, 'wb') as f:
+            pickle.dump(test_object_sizes[idx], f)
