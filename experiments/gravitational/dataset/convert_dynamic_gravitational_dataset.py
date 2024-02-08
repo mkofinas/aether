@@ -3,7 +3,7 @@ import pickle
 import torch
 import numpy as np
 
-data_dir = 'data/gravitational_field_3d'
+data_dir = 'dataset/data/gravitational_field_3d'
 simulation = 'gravitational_field'
 ndim = 3
 num_particles = 5

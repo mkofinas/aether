@@ -3,7 +3,7 @@ import pickle
 import torch
 import numpy as np
 
-data_dir = 'data/electrostatic_field'
+data_dir = 'dataset/data/electrostatic_field'
 simulation = 'electrostatic_field'
 ndim = 2
 particles = 5
